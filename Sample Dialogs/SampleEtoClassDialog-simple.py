@@ -20,7 +20,7 @@ class SampleEtoViewCaptureDialog(Dialog[bool]):
     def __init__(self):
         # Initialize dialog box
         self.Title = 'Sample Eto: Room Number'
-        self.Padding = Padding(10,20,40)
+        self.Padding = Padding(10)
         self.Resizable = False
         
         # Create controls for the dailog
@@ -40,7 +40,7 @@ class SampleEtoViewCaptureDialog(Dialog[bool]):
         layout.Spacing = Size(5, 5)
         layout.AddRow(self.m_label, self.m_textbox)
         layout.AddRow(None) # spacer
-        layout.AddRow(self.DefaultButton, self.AbortButton)
+        layout.AddRow(None, self.DefaultButton, self.AbortButton, None)
 
 
         # Set the dialog content
