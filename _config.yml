@@ -11,7 +11,7 @@ theme: jekyll-theme-minimal
 #   Google search results) and in your feed.xml site description.
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://scotttd.github.io/eto-layouts/" # the base hostname & protocol for your site
-nwo: "scotttd/eto-layout" # github repository (name with owner)
+nwo: "scotttd/eto-layouts" # github repository (name with owner)
 
 # If we decide that we want to use kramdown over redcarpet, syntax
 # highlighting is performed by turning on the following options and
