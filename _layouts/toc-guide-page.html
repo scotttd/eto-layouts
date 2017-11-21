@@ -1,0 +1,47 @@
+---
+layout: bootstrap
+---
+
+<div class="container-fluid">
+
+<div class="row-fluid">
+    <!--Nav Bar -->
+    {% include sidebar.html %}
+
+    <!--Main Content -->
+    <div class="col-xs-12 col-md-9">
+      <!--<div class="post">-->
+
+        <article class="post-content">
+
+          <ol class="breadcrumb">
+              {% assign sdk = page.sdk[0] %}
+              {% assign sdk_url = sdk | downcase %}
+              {% if sdk_url == 'c/c++' %}
+                {% assign sdk_url = 'cpp' %}
+              {% endif %}
+              <li><a href="{{ site.baseurl }}/guides/{{ sdk_url }}">{{ sdk }}</a></li>
+
+              {% if page.category_page %}
+                <li class="active"><a href="{{ site.baseurl }}/{{ page.category_page }}">{{ page.categories }}</a></li>
+              {% else %}
+                {% if page.categories[0] != page.sdk[0] %}
+                  <li class="active">{{ page.categories }}</li>
+                {% endif %}
+              {% endif %}
+          </ol>
+
+          <h1>{{ page.title }}</h1>
+
+          <p>{% include byline.html %}</p>
+
+          <p>{{ page.description }}</p>
+
+          {{ content }}
+        </article>
+
+      <!--</div>-->
+
+    </div>
+</div>
+</div>

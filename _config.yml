@@ -1,5 +1,5 @@
-title: Minimal theme
-description: Minimal is a theme for GitHub Pages.
+title: Product Name
+description: McNeel theme for GitHub Pages.
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-minimal
@@ -30,3 +30,25 @@ plugins:
 #port: 4444
 
 safe: true
+
+collections:
+  - guide_topics
+  - api
+  - samples
+  - videos
+
+collections:
+  guide_topics:
+    output: true
+    permalink: /guides/:path/
+  api:
+    output: true
+    permalink: /api/:path/
+  samples:
+    output: true
+    permalink: /samples/:path/
+  videos:
+    output: true
+    permalink: /videos/
+
+exclude: [/script, /test, README.md, CONTRIBUTING.md, Gemfile]

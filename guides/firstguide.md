@@ -1,5 +1,6 @@
 ---
 title: General Guides
+layout: fullwidth-page
 ---
 
 # Contributing to The Minimal Theme

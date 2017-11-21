@@ -1,0 +1,47 @@
+<header class="site-header">
+
+
+    <a class="site-title" href="{{ site.baseurl }}/"><img src="{{ site.baseurl }}/images/rhinodevlogo148x128.png" alt="Rhino Developer Docs" height="48" width="56"></a><a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a>
+
+    <nav class="site-nav">
+      <img class="menu-icon" src="{{ site.baseurl }}/images/gi.svg">
+      {% assign pages = site.pages | sort:"order"  %}
+      <div class="trigger">
+      	<!--<a class="page-link" href="{{ site.baseurl }}/">Welcome</a>-->
+        <!-- get current page title and "collection" to figure out which nav
+             link should be "active" -->
+        {% assign current = page.title  %}
+        {% assign url_array = page.url | split: "/" %}
+        {% assign collection = url_array[1] | capitalize %}
+        {% for page in pages %}
+          {% if page.title != 'Administration' %}
+            {% if page.title != 'Blog' %}
+              {% if page.title and page.order %}
+                {% if page.title == current or page.title == collection %}
+                  <a class="page-link active" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
+                {% else %}
+                  <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        <a class="page-link" href="http://discourse.mcneel.com">Forums</a>
+        <!-- Google Search Engine -->
+        <!-- TODO Move to this site back into the Mcneel search, or use a simple site only search for results -->
+        <div id="sitesearch">
+            <!-- Google CSE Search Box Begins  -->
+            <!-- Use of this code assumes agreement with the Google Custom Search Terms of Service. -->
+            <!-- The terms of service are available at https://www.google.com/cse/docs/tos.html -->
+            <form id="cref" action="{{ site.baseurl }}/search-results.html">
+                <input type="hidden" name="cref" value="007988927381198593803:mcq6pshqsn8" />
+                <input id="searchtext" type="text" name="q" size="24" value="" placeholder="search" />
+                <input class="searchBox" type="submit" name="sa" size="2" value=" " />
+            </form>
+        <!-- Google CSE Search Box Ends -->
+        </div>
+        <!--End of Google Search Engine -->
+      </div>
+    </nav>
+
+</header>
