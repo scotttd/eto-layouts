@@ -96,8 +96,11 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         
 # Create a group box
         self.m_groupbox = forms.GroupBox(Text = 'Groupbox')
+        self.m_groupbox.Padding = drawing.Padding(5)
+
         
         grouplayout = forms.DynamicLayout()
+        grouplayout.Spacing = drawing.Size(3, 3)
         
         label1 = forms.Label(Text = 'Enter Text:')
         textbox1 = forms.TextBox()
@@ -116,18 +119,8 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         
         # Capture the active view to a System.Drawing.Bitmap
         view = scriptcontext.doc.Views.ActiveView
-        bitmap = view.CaptureToBitmap()
-        
-        # Convert the System.Drawing.Bitmap to an Eto.Drawing.Bitmap
-        # which is required for an Eto image view control
-        stream = System.IO.MemoryStream()
-        format = System.Drawing.Imaging.ImageFormat.Png
-        System.Drawing.Bitmap.Save(bitmap, stream, format)
-        if stream.Length != 0:
-          self.m_image_view.Image = drawing.Bitmap(stream)
-        stream.Dispose()
+        self.m_image_view.Image = Rhino.UI.EtoExtensions.ToEto(view.CaptureToBitmap())
 
-        
 #Create ListBox
         self.m_listbox = forms.ListBox()
         self.m_listbox.DataStore = ['first pick', 'second pick', 'third pick']
@@ -176,6 +169,7 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         self.m_slider.MaxValue = 10
         self.m_slider.MinValue = 0
         self.m_slider.Value = 3
+        self.m_slider.Orientation = forms.Orientation.Vertical
         
 # Create Spinner
         self.m_spinner = forms.Spinner()
@@ -184,7 +178,43 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
 # Create Text Area Box
         self.m_textarea = forms.TextArea()
         self.m_textarea.Size = drawing.Size(200, 200)
+
+# Create TreeGridView
+        self.m_treegridview = forms.TreeGridView()
+        self.m_treegridview.Size = drawing.Size(200, 200)
+
+        column1 = forms.GridColumn()
+        column1.HeaderText = 'Tree'
+        column1.Editable = True
+        column1.DataCell = forms.TextBoxCell(0)
+        self.m_treegridview.Columns.Add(column1)
         
+        column2 = forms.GridColumn()
+        column2.HeaderText = 'Prop 2'
+        column2.Editable = True
+        column2.DataCell = forms.TextBoxCell(1)
+        self.m_treegridview.Columns.Add(column2)
+
+        column3 = forms.GridColumn()
+        column3.HeaderText = 'Prop 3'
+        column3.Editable = True
+        column3.DataCell = forms.TextBoxCell(2)
+        self.m_treegridview.Columns.Add(column3)
+        
+        treecollection = forms.TreeGridItemCollection()
+        item1 = forms.TreeGridItem(Values=('node1', 'node1b', 'node1c'))
+        item1.Expanded = True
+        item1.Children.Add(forms.TreeGridItem(Values=('node2', 'node2b', 'node2c')))
+        item1.Children.Add(forms.TreeGridItem(Values=('node3', 'node3b', 'node3c')))
+        treecollection.Add(item1)
+        item2 = forms.TreeGridItem(Values=('node11', 'node11b', 'node11c'))
+        treecollection.Add(item2)
+        self.m_treegridview.DataStore = treecollection
+
+# Create a WebView
+        self.m_webview = forms.WebView()
+        self.m_webview.Size = drawing.Size(300, 400)
+        self.m_webview.Url = System.Uri('http://developer.rhino3d.com/guides/rhinopython/')
 
         # Create the default button
         self.DefaultButton = forms.Button(Text = 'OK')
@@ -193,16 +223,24 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         # Create the abort button
         self.AbortButton = forms.Button(Text = 'Cancel')
         self.AbortButton.Click += self.OnCloseButtonClick
+        
+        # Create a layout of ok and cancel buttons
+        buttonslayout = forms.DynamicLayout()
+        buttonslayout.Spacing = drawing.Size(5,5)
+        buttonslayout.AddRow(None,self.m_gobutton, self.DefaultButton, self.AbortButton)
 
         # Create a table layout and add all the controls
+        controllayout = forms.DynamicLayout()
+        controllayout.Spacing = drawing.Size(5, 5)
+        controllayout.AddRow(self.m_gridview)
+
+        # Create stacklayout for control and buttons layouts.
         layout = forms.DynamicLayout()
         layout.Spacing = drawing.Size(5, 5)
-        layout.AddRow(self.m_groupbox)
-        layout.AddRow(None) # spacer
-        layout.AddRow(self.DefaultButton, self.AbortButton)
+        layout.AddRow(controllayout)
+        layout.AddRow(None)
+        layout.AddRow(buttonslayout)
 
-
-        # Set the dialog content
         self.Content = layout
 
     # Start of the class functions
@@ -211,6 +249,9 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
     def GetText(self):
         return self.m_textbox.Text
         
+    # Get grid position
+    def GetGrid(self):
+        return self.m_gridview.DataStore[0][1]
         
     # Linkbutton click handler
     def OnLinkButtonClick(self, sender, e):
@@ -242,8 +283,8 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
 def SampleEtoRoomNumberDialog():
     dialog = SampleEtoViewCaptureDialog();
     rc = dialog.ShowModal(Rhino.UI.RhinoEtoApp.MainWindow)
-    if (rc):
-        print dialog.GetText()
+    print('testme')
+    print(dialog.GetGrid())
 
 
 

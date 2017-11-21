@@ -3,23 +3,20 @@
 # MIT License - Copyright (c) 2017 Robert McNeel & Associates.
 # See License.md in the root of this repository for details.
 ################################################################################
-import clr
-clr.AddReference("Eto")
-clr.AddReference("Rhino.UI")
 
-from Rhino.UI import *
-from Eto.Forms import *
-from Eto.Drawing import *
+import Rhino.UI
+import Eto.Forms as forms
+import Eto.Drawing as drawing
 
-obj = Dialog()
+obj = forms.Dialog()
 obj.Title = "Sample Eto Dialog"
-obj.ClientSize = Size(200, 400)
-obj.Padding = Padding(5)
+obj.ClientSize = drawing.Size(200, 100)
+obj.Padding = drawing.Padding(5)
 obj.Resizable = False
 
-label = Label()
+label = forms.Label()
 label.Text = "Hello Rhino.Python!"
 
 obj.Content = label
 
-obj.ShowModal(RhinoEtoApp.MainWindow)
+obj.ShowModal(Rhino.UI.RhinoEtoApp.MainWindow)

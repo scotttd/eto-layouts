@@ -96,8 +96,11 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         
 # Create a group box
         self.m_groupbox = forms.GroupBox(Text = 'Groupbox')
+        self.m_groupbox.Padding = drawing.Padding(5)
+
         
         grouplayout = forms.DynamicLayout()
+        grouplayout.Spacing = drawing.Size(3, 3)
         
         label1 = forms.Label(Text = 'Enter Text:')
         textbox1 = forms.TextBox()
@@ -116,18 +119,8 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         
         # Capture the active view to a System.Drawing.Bitmap
         view = scriptcontext.doc.Views.ActiveView
-        bitmap = view.CaptureToBitmap()
-        
-        # Convert the System.Drawing.Bitmap to an Eto.Drawing.Bitmap
-        # which is required for an Eto image view control
-        stream = System.IO.MemoryStream()
-        format = System.Drawing.Imaging.ImageFormat.Png
-        System.Drawing.Bitmap.Save(bitmap, stream, format)
-        if stream.Length != 0:
-          self.m_image_view.Image = drawing.Bitmap(stream)
-        stream.Dispose()
+        self.m_image_view.Image = Rhino.UI.EtoExtensions.ToEto(view.CaptureToBitmap())
 
-        
 #Create ListBox
         self.m_listbox = forms.ListBox()
         self.m_listbox.DataStore = ['first pick', 'second pick', 'third pick']
@@ -176,6 +169,7 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         self.m_slider.MaxValue = 10
         self.m_slider.MinValue = 0
         self.m_slider.Value = 3
+        self.m_slider.Orientation = forms.Orientation.Vertical
         
 # Create Spinner
         self.m_spinner = forms.Spinner()
@@ -184,7 +178,43 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
 # Create Text Area Box
         self.m_textarea = forms.TextArea()
         self.m_textarea.Size = drawing.Size(200, 200)
+
+# Create TreeGridView
+        self.m_treegridview = forms.TreeGridView()
+        self.m_treegridview.Size = drawing.Size(200, 200)
+
+        column1 = forms.GridColumn()
+        column1.HeaderText = 'Tree'
+        column1.Editable = True
+        column1.DataCell = forms.TextBoxCell(0)
+        self.m_treegridview.Columns.Add(column1)
         
+        column2 = forms.GridColumn()
+        column2.HeaderText = 'Prop 2'
+        column2.Editable = True
+        column2.DataCell = forms.TextBoxCell(1)
+        self.m_treegridview.Columns.Add(column2)
+
+        column3 = forms.GridColumn()
+        column3.HeaderText = 'Prop 3'
+        column3.Editable = True
+        column3.DataCell = forms.TextBoxCell(2)
+        self.m_treegridview.Columns.Add(column3)
+        
+        treecollection = forms.TreeGridItemCollection()
+        item1 = forms.TreeGridItem(Values=('node1', 'node1b', 'node1c'))
+        item1.Expanded = True
+        item1.Children.Add(forms.TreeGridItem(Values=('node2', 'node2b', 'node2c')))
+        item1.Children.Add(forms.TreeGridItem(Values=('node3', 'node3b', 'node3c')))
+        treecollection.Add(item1)
+        item2 = forms.TreeGridItem(Values=('node11', 'node11b', 'node11c'))
+        treecollection.Add(item2)
+        self.m_treegridview.DataStore = treecollection
+
+# Create a WebView
+        self.m_webview = forms.WebView()
+        self.m_webview.Size = drawing.Size(300, 400)
+        self.m_webview.Url = System.Uri('http://developer.rhino3d.com/guides/rhinopython/')
 
         # Create the default button
         self.DefaultButton = forms.Button(Text = 'OK')
@@ -193,17 +223,120 @@ class SampleEtoViewCaptureDialog(forms.Dialog[bool]):
         # Create the abort button
         self.AbortButton = forms.Button(Text = 'Cancel')
         self.AbortButton.Click += self.OnCloseButtonClick
+        
+
+##############################################################################
+# The Dynamic Layout Example
+##############################################################################
+        # Create a layout of ok and cancel buttons
+        buttonslayout = forms.DynamicLayout()
+        buttonslayout.Spacing = drawing.Size(5,5)
+        buttonslayout.AddRow(None,self.m_gobutton, self.DefaultButton, self.AbortButton)
 
         # Create a table layout and add all the controls
-        layout = forms.DynamicLayout()
-        layout.Spacing = drawing.Size(5, 5)
-        layout.AddRow(self.m_groupbox)
-        layout.AddRow(None) # spacer
-        layout.AddRow(self.DefaultButton, self.AbortButton)
+        controllayout = forms.DynamicLayout()
+        controllayout.Spacing = drawing.Size(5, 5)
+        controllayout.AddRow(self.m_treegridview)
+        
+        # Create stacklayout for control and buttons layouts.
+        layout1 = forms.DynamicLayout()
+        layout1.Spacing = drawing.Size(5, 5)
+        layout1.AddRow(controllayout)
+        layout1.AddRow(None)
+        layout1.AddRow(buttonslayout)
+        
+##############################################################################
+# The Dynamic Layout controls using Rows
+##############################################################################
+        layout = forms.DynamicLayout(DefaultSpacing = drawing.Size(2,2))
+#        layout.AddAutoSized(self.m_progressbar)
+#        layout.AddRow(self.m_gobutton)
+  
+        layout.AddRow(None, forms.Label(Text = 'Label1'), forms.Label(Text = 'Button1'), None)
+        layout.AddRow(None, forms.Label(Text = 'Label2'), forms.Label(Text = 'Button2'), None)
+#        layout.AddCentered(self.collapsePanel) # we need this auto-sized so we can get its width to adjust form height
+#        layout.Add(None); # expanding space, in case you want the form re-sizable
+        layout.AddRow(None,self.DefaultButton, self.AbortButton, None);
+
+##############################################################################
+# The Dynamic Layout controls using Columns
+##############################################################################
+        layout3 = forms.DynamicLayout(DefaultSpacing = drawing.Size(2,2))
+#        layout3.AddAutoSized(self.m_progressbar)
+#        layout3.AddRow(self.m_gobutton)
+        layout3.AddRow(None)
+        layout3.AddSeparateColumn(None, forms.Label(Text = 'Label1'), forms.Label(Text = 'Button1'), None)
+        layout3.AddSeparateColumn(None, forms.Label(Text = 'Label2'), forms.Label(Text = 'Button2'), None)
+#        layout3.AddCentered(self.collapsePanel) # we need this auto-sized so we can get its width to adjust form height
+#        layout3.Add(None); # expanding space, in case you want the form re-sizable
+        layout3.AddRow(None,self.DefaultButton, self.AbortButton, None);
+
+        
+##############################################################################
+# The Dynamic Layout using Horizontal and Vertical
+##############################################################################
+        layout2 = forms.DynamicLayout(DefaultSpacing = drawing.Size(2,2))
+# This example uses the verbose methods creating sections in separate statements
+
+        layout2.BeginHorizontal()
+        layout2.Add(self.m_gobutton)
+        layout2.Add(self.m_progressbar)
+        layout2.EndHorizontal()
+
+        layout2.BeginHorizontal()
+        layout2.Add(self.m_slider)
+
+        layout2.BeginVertical(padding = drawing.Padding(10))
+        layout2.Add(forms.TextBox())
+        layout2.Add(self.m_searchbox)
+        layout2.EndVertical()
+        layout2.EndHorizontal()
+        
+        layout2.BeginHorizontal()
+        layout2.Add(None)
+        layout2.Add(self.DefaultButton)
+        layout2.Add(self.AbortButton)
+        layout2.Add(None)
+        layout2.EndHorizontal()
+
+##############################################################################
+# The Dynamic Layout using Horizontal and Vertical with row
+##############################################################################
+        layout4 = forms.DynamicLayout(DefaultSpacing = drawing.Size(2,2))
+# This example uses the verbose methods creating sections in separate statements
+
+        layout4.AddRow('Camera:') 
+
+        layout4.BeginCentered(padding = drawing.Padding(10, 5, 10, 10))
+        layout4.AddRow('Name:', forms.TextBox(Text = 'Persp1')) 
+        layout4.AddRow('Lens:', forms.TextBox(Text = '50mm')) 
+        layout4.AddRow('Projection:  ', forms.TextBox(Text = '2-point')) 
+        layout4.EndCentered()
+
+        layout4.AddSeparateRow(None, self.DefaultButton, self.AbortButton, None)
 
 
-        # Set the dialog content
-        self.Content = layout
+
+##############################################################################
+# The Dynamic Layout using Horizontal and Vertical with row
+##############################################################################
+        layout5 = forms.DynamicLayout(DefaultSpacing = drawing.Size(2,2))
+# This example uses the verbose methods creating sections in separate statements
+
+        layout5.AddRow('Camera:') 
+
+
+        layout5.BeginVertical(padding = drawing.Padding(10, 5, 10, 10))
+        layout5.AddRow('Name:', forms.TextBox(Text = 'Persp1')) 
+        layout5.AddRow('Lens:', forms.TextBox(Text = '50mm')) 
+        layout5.AddRow('Projection:  ', forms.TextBox(Text = '2-point'))
+        layout5.EndVertical()
+
+        layout5.BeginVertical()
+        layout5.AddRow(None, self.DefaultButton, self.AbortButton, None)
+        layout5.EndVertical()
+
+        self.Content = layout4
 
     # Start of the class functions
 
