@@ -59,7 +59,7 @@ body {
 	border-width: 1px;
 	border-color: white;
 	cursor: pointer;
-  background-image: url('/images/searchicon.png');
+    background-image: url('images/searchicon.png');
 	vertical-align: middle;
     line-height: 18px;
     padding-bottom:15px;
