@@ -2,7 +2,7 @@ title: Product Name
 description: McNeel theme for GitHub Pages.
 show_downloads: true
 google_analytics:
-theme: jekyll-theme-minimal
+# theme: jekyll-theme-minimal
 
 # email: alain@mcneel.com
 # description: > # this means to ignore newlines until "baseurl:"
